@@ -27,7 +27,7 @@ def get_basic_grad_fn(net, clip_grad, max_grad=10):
 
 @curry
 def compute_loss(net, criterion, fw_args, loss_args):
-    loss = criterion(*((net(*fw_args),) + loss_args)))
+    loss = criterion(*((net(*fw_args),) + loss_args))
     return loss
 
 @curry
