@@ -15,7 +15,7 @@ MAX_ARTICLE_LEN = 512
 
 
 # Copy of Summarizer class from extract.py, but with only W2V, Transformer, and SL
-def SummarizerEncoder(nn.Module):
+class SummarizerEncoder(nn.Module):
     def __init__(self, emb_dim, vocab_size,
                 conv_hidden, encoder_hidden, encoder_layer,
                 isTrain=True, n_hop=1, dropout=0.0):
