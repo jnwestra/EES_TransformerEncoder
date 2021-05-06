@@ -8,7 +8,6 @@ import pickle as pkl
 from itertools import starmap
 
 from cytoolz import curry
-from pytorch_pretrained_bert.tokenization import BertTokenizer
 
 from utils import PAD, UNK, START, END
 from model.extract import Summarizer
