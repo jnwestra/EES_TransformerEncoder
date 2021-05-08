@@ -130,37 +130,52 @@ def test(args, split):
             print(ROUGE, file=f)
 
 def trained_encoder(args, split):
-  result_path = args.result_path
+    result_path = args.result_path
 
-  def coll(batch):
-        articles = list(filter(bool, batch))
-        return articles
-  dataset = DecodeDataset(split)
-  n_data = len(dataset)
+    def coll(batch):
+            articles = list(filter(bool, batch))
+            return articles
+    dataset = DecodeDataset(split)
+    n_data = len(dataset)
 
-  loader = DataLoader(dataset, batch_size=args.batch,
-                      shuffle=False, num_workers=4, collate_fn=coll)
+    loader = DataLoader(dataset, batch_size=args.batch,
+                        shuffle=False, num_workers=4, collate_fn=coll)
 
-  ckpt_filename = join(result_path, 'ckpt', args.ckpt_name)
-  ckpt = torch.load(ckpt_filename)['state_dict']
+    ckpt_filename = join(result_path, 'ckpt', args.ckpt_name)
+    ckpt = torch.load(ckpt_filename)['state_dict']
 
-  extractor = Extractor(result_path, ckpt, cuda=args.cuda)
+    extractor = Extractor(result_path, ckpt, cuda=args.cuda)
 
-  enc_list = []
+    enc_list = []
     cur_idx = 0
     start = time()
     with torch.no_grad():
-      for raw_article_batch in loader:
+    for raw_article_batch in loader:
         tokenized_article_batch = map(tokenize(None, args.emb_type), raw_article_batch)
         for raw_art_sents in tokenized_article_batch:
-          _, enc_out = extractor(raw_art_sents)
-          enc_list.append(enc_out)
-          cur_idx += 1
-          print('{}/{} ({:.2f}%) encoded in {} seconds\r'.format(
+        _, enc_out = extractor(raw_art_sents)
+        enc_list.append(enc_out)
+        cur_idx += 1
+        print('{}/{} ({:.2f}%) encoded in {} seconds\r'.format(
                 cur_idx, n_data, cur_idx/n_data*100, timedelta(seconds=int(time()-start))
-          ), end='')
-  print(enc_list[0].size())
-  return enc_list
+        ), end='')
+    print(enc_list[0].size())
+    return enc_list
+
+class argWrapper(object):
+  def __init__(self,
+               ckpt_name,
+               result_path='./result',
+               batch=32,
+               cuda=torch.cuda.is_available(),
+               encoder_layer=12,
+               encoder_hidden=512):
+    self.ckpt_name = ckpt_name
+    self.result_path = result_path
+    self.batch = batch
+    self.cuda = cuda
+    self.encoder_layer = 12
+    self.encoder_hidden = 512
 
 if __name__ == '__main__':
     args = argWrapper('ckpt-0.313407-3000')
