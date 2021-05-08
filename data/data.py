@@ -1,4 +1,4 @@
-""" CNN/DM dataset"""
+""" IMGDM dataset"""
 import json
 import re
 import os
@@ -7,7 +7,7 @@ from os.path import join
 from torch.utils.data import Dataset
 
 
-class CnnDmDataset(Dataset):
+class ImgDmDataset(Dataset):
     def __init__(self, split: str, path: str) -> None:
         assert split in ['train', 'val', 'test']
         self._data_path = join(path, split)

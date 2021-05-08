@@ -34,38 +34,21 @@ class SummarizerEncoder(nn.Module):
             get_sinusoid_encoding_table(1000, enc_out_dim, padding_idx=0),
             freeze=True)
         
-        # SL decoder
+        SL decoder
         self._ws = nn.Linear(enc_out_dim, 2)
 
 
     def forward(self, article_sents, sent_nums):
         enc_out = self._encode(article_sents, sent_nums)
 
-        #bs, seq_len, d = enc_out.size()
-        #output = self._ws(enc_out)
-        #assert output.size() == (bs,seq_len,2)
-        #return output
+        bs, seq_len, d = enc_out.size()
+        output = self._ws(enc_out)
+        assert output.size() == (bs,seq_len,2)
 
-        return enc_out
-
-    def extract(self, article_sents, sent_nums=None, k=4):
-        enc_out = self._encode(article_sents, sent_nums)
-
-        # SL Decoder
-
-        #seq_len = enc_out.size(1)
-        #output = self._ws(enc_out)
-        #assert output.size() == (1, seq_len, 2)
-        #
-        #_, idxs = output[:,:,1].sort(descending=True)
-        #extract = [idxs[0][i].item() for i in range(k)]
-        #
-        #return extract
-
-        return enc_out
+        return output, enc_out
 
     def _encode(self, article_sents, sent_nums):
-        hidden_size = self.art_enc.input_size
+        hidden_size = self._art_enc.input_size
 
         if sent_nums is None:
             enc_sent = self._sent_enc(article_sents[0]).unsqueeze(0)
@@ -132,7 +115,7 @@ class ConvSentEncoder(nn.Module):
     def forward(self, input_):
         emb_input = self._embedding(input_)
         conv_in = F.dropout(emb_input.transpose(1, 2),
-                            self._dropout, training=self.training)
+                            self._dropout, training=False)
         output = torch.cat([F.relu(conv(conv_in)).max(dim=2)[0]
                             for conv in self._convs], dim=1)
         return output

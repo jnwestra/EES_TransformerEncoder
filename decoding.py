@@ -13,12 +13,12 @@ from utils import PAD, UNK, START, END
 from encoder import SummarizerEncoder
 #from model.rl import ActorCritic
 from data.batcher import conver2id, pad_batch_tensorize
-from data.data import CnnDmDataset
+from data.data import ImgDmDataset
 
 
 DATASET_DIR = './IMGDM'
 
-class DecodeDataset(CnnDmDataset):
+class DecodeDataset(ImgDmDataset):
     """ get the article sentences only (for decoding use)"""
     def __init__(self, split):
         assert split in ['val', 'test']
@@ -56,7 +56,7 @@ class Extractor(object):
     def __init__(self, ext_dir, ext_ckpt, max_ext=6, cuda=True):
         ext_meta = json.load(open(join(ext_dir, 'meta.json')))
         ext_args = ext_meta['model_args']
-        extractor = SummarizerEncoder(**ext_args)
+        _, extractor = SummarizerEncoder(**ext_args)
         extractor.load_state_dict(ext_ckpt)
 
         word2id = pkl.load(open(join(ext_dir, 'vocab.pkl'), 'rb'))
