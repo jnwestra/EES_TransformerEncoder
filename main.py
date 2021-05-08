@@ -56,14 +56,14 @@ class ExtractDataset(ImgDmDataset):
         return art_sents, extracts
 
 def test(args, split):
-    ext_dir = args.path
+    ext_dir = args.result_path
     ckpts = sort_ckpt(ext_dir)
 
     #setup loader
     def coll(batch):
         articles = list(filter(bool, batch))
         return articles
-    dataset = DecodeDataset(split)
+    dataset = DecodeDataset(split, args.result_path)
 
     n_data = len(dataset)
     loader = DataLoader(dataset, batch_size=args.batch,
@@ -72,11 +72,11 @@ def test(args, split):
     print('dataset length', n_data)
 
     # decode and eval top 5 models
-    if not os.path.exists(join(args.path, 'decode')):
-        os.mkdir(join(args.path, 'decode'))
+    if not os.path.exists(join(args.result_path, 'decode')):
+        os.mkdir(join(args.result_path, 'decode'))
         
-    if not os.path.exists(join(args.path, 'ROUGE')):
-        os.mkdir(join(args.path, 'ROUGE'))
+    if not os.path.exists(join(args.result_path, 'ROUGE')):
+        os.mkdir(join(args.result_path, 'ROUGE'))
         
     for i in range(min(5, len(ckpts))):
         print('Start loading checkpoint {} !'.format(ckpts[i]))
@@ -84,7 +84,7 @@ def test(args, split):
                    join(ext_dir, 'ckpt/{}'.format(ckpts[i]))
         )['state_dict']
         extractor, _ = Extractor(ext_dir, cur_ckpt, cuda=args.cuda)
-        save_path = join(args.path, 'decode/{}'.format(ckpts[i]))
+        save_path = join(args.result_path, 'decode/{}'.format(ckpts[i]))
         if not os.path.exists(save_path):
             os.mkdir(save_path)
 
@@ -126,7 +126,7 @@ def test(args, split):
         print("eval_rouge")
         ROUGE = eval_rouge(dec_path, ref_path)
         print(ROUGE)
-        with open(join(args.path, 'ROUGE/{}.txt'.format(ckpts[i])), 'w') as f:
+        with open(join(args.result_path, 'ROUGE/{}.txt'.format(ckpts[i])), 'w') as f:
             print(ROUGE, file=f)
 
 def trained_encoder(args, split):
@@ -135,7 +135,7 @@ def trained_encoder(args, split):
     def coll(batch):
             articles = list(filter(bool, batch))
             return articles
-    dataset = DecodeDataset(split)
+    dataset = DecodeDataset(split,args.project_path)
     n_data = len(dataset)
 
     loader = DataLoader(dataset, batch_size=args.batch,
@@ -145,20 +145,20 @@ def trained_encoder(args, split):
     ckpt = torch.load(ckpt_filename)['state_dict']
 
     extractor = Extractor(result_path, ckpt, cuda=args.cuda)
-
+    
     enc_list = []
     cur_idx = 0
     start = time()
     with torch.no_grad():
-    for raw_article_batch in loader:
-        tokenized_article_batch = map(tokenize(None, args.emb_type), raw_article_batch)
-        for raw_art_sents in tokenized_article_batch:
-        _, enc_out = extractor(raw_art_sents)
-        enc_list.append(enc_out)
-        cur_idx += 1
-        print('{}/{} ({:.2f}%) encoded in {} seconds\r'.format(
-                cur_idx, n_data, cur_idx/n_data*100, timedelta(seconds=int(time()-start))
-        ), end='')
+        for raw_article_batch in loader:
+            tokenized_article_batch = map(tokenize(None, args.emb_type), raw_article_batch)
+            for raw_art_sents in tokenized_article_batch:
+            _, enc_out = extractor(raw_art_sents)
+            enc_list.append(enc_out)
+            cur_idx += 1
+            print('{}/{} ({:.2f}%) encoded in {} seconds\r'.format(
+                    cur_idx, n_data, cur_idx/n_data*100, timedelta(seconds=int(time()-start))
+            ), end='')
     print(enc_list[0].size())
     return enc_list
 
@@ -166,12 +166,14 @@ class argWrapper(object):
   def __init__(self,
                ckpt_name,
                result_path='./result',
+               project_path='.',
                batch=32,
                cuda=torch.cuda.is_available(),
                encoder_layer=12,
                encoder_hidden=512):
     self.ckpt_name = ckpt_name
     self.result_path = result_path
+    self.project_path = project_path
     self.batch = batch
     self.cuda = cuda
     self.encoder_layer = 12

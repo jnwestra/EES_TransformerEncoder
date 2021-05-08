@@ -16,13 +16,11 @@ from data.batcher import conver2id, pad_batch_tensorize
 from data.data import ImgDmDataset
 
 
-DATASET_DIR = './IMGDM'
-
 class DecodeDataset(ImgDmDataset):
     """ get the article sentences only (for decoding use)"""
-    def __init__(self, split):
+    def __init__(self, split, path):
         assert split in ['val', 'test']
-        super().__init__(split, DATASET_DIR)
+        super().__init__(split, path)
 
     def __getitem__(self, i):
         js_data = super().__getitem__(i)
