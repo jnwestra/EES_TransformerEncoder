@@ -124,7 +124,7 @@ def get_encoded(args, split):
     start = time()
     with torch.no_grad():
         for raw_article_batch in loader:
-            tokenized_article_batch = map(tokenize(None), raw_article_batch)
+            tokenized_article_batch = tokenize(None, raw_article_batch)
             for raw_art_sents in tokenized_article_batch:
                 enc_out = encoder(raw_art_sents)
                 enc_list.append(enc_out)
