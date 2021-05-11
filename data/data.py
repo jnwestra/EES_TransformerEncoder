@@ -17,15 +17,16 @@ class ImgDmDataset(Dataset):
         return self._n_data
 
     def __getitem__(self, i: int):
+        print(self._data_path)
+        print(self._names[i])
         with open(join(self._data_path, self._names[i])) as f:
             js = json.loads(f.read())
         return js
 
-
-def _get_names(path):
-    """ count number of data in the given path"""
-    matcher = re.compile(r'[0-9]+\.json')
-    match = lambda name: bool(matcher.match(name))
-    names = os.listdir(path)
-    n_data = len(list(filter(match, names)))
-    return names, n_data
+    def _get_names(path):
+        """ get names of and count number of data in the given path"""
+        matcher = re.compile(r'[0-9]+\.json')
+        match = lambda name: bool(matcher.match(name))
+        names = os.listdir(path)
+        n_data = len(list(filter(match, names)))
+        return names, n_data
