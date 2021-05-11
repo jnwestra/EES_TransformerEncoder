@@ -51,20 +51,17 @@ def get_n_ext(split, idx):
         return 3
 
 class Decoder(object):
-    def __init__(self, args, ckpt, max_ext=6, cuda=True):
+    def __init__(self, args, ckpt, max_ext=6):
         extractor = Summarizer(args)
         extractor.load_state_dict(ckpt)
 
-        word2id = pkl.load(open(join(ext_dir, 'vocab.pkl'), 'rb'))
+        word2id = pkl.load(open(join(args.result_path, 'vocab.pkl'), 'rb'))
         self._word2id = word2id
 
-        self._device = torch.device('cuda' if cuda else 'cpu')
+        self._device = torch.device('cuda' if args.cuda else 'cpu')
         self._net = extractor.to(self._device)
         ## self._id2word = {i: w for w, i in word2id.items()}
         self._max_ext = max_ext
-
-    def get_enc_out(self, raw_article_sents):
-        return extractor.get_enc_out(raw_article_sents)
 
     def __call__(self, raw_article_sents):
         self._net.eval()

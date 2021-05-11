@@ -17,7 +17,7 @@ from evaluate import eval_rouge
 from data.data import ImgDmDataset
 from data.batcher import tokenize
 
-import warningssuper().__init__()
+import warningssuper
 warnings.filterwarnings("ignore", category=Warning)
 
 DATA_DIR = './IMGDM'
@@ -46,7 +46,7 @@ def test(args, split):
     ckpt_filename = join(args.result_path, 'ckpt', args.ckpt_name)
     ckpt = torch.load(ckpt_filename)['state_dict']
 
-    decoder = Decoder(args, cur_ckpt)
+    decoder = Decoder(**args, cur_ckpt)
     save_path = join(args.result_path, f'decode/{args.ckpt_name}')
     if not os.path.exists(save_path):
         os.mkdir(save_path)

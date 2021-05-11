@@ -6,7 +6,7 @@ from transformer.Layers import EncoderLayer
 
 class TransformerEncoder(nn.Module):
 
-    def __init__(self, input_size, hidden_size, n_layer, decoder='SL', ff_size=2048, n_head=16, dropout=0.2):
+    def __init__(self, input_size, hidden_size, n_layer, ff_size=2048, n_head=16, dropout=0.2):
 
         super().__init__()
 		
@@ -17,7 +17,7 @@ class TransformerEncoder(nn.Module):
         self.dropout = dropout
         self.n_layer = n_layer
         self.d_k = self.d_v = int(self.hidden_size / self.n_head)
-				
+		
         self.layer_stack = nn.ModuleList([
         EncoderLayer(self.hidden_size, self.d_inner, self.n_head, self.d_k, self.d_v, dropout=self.dropout)
         for _ in range(self.n_layer)])
