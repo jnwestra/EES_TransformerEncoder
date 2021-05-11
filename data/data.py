@@ -8,10 +8,8 @@ from torch.utils.data import Dataset
 
 def _get_names(path):
     """ get names of and count number of data in the given path"""
-    matcher = re.compile(r'[0-9]+\.json')
-    match = lambda name: bool(matcher.match(name))
-    names = [filename for filename in os.listdir(path) if isfile(filename)]
-    n_data = len(list(filter(match, names)))
+    names = [filename for filename in os.listdir(path) if isfile(filename) and filename.endswith('.json')]
+    n_data = len(names)
     return names, n_data
 
 class ImgDmDataset(Dataset):
@@ -19,8 +17,6 @@ class ImgDmDataset(Dataset):
         assert split in ['train', 'val', 'test']
         self._data_path = join(path, split)
         self._names, self._n_data = _get_names(self._data_path)
-        print(self._data_path)
-        print(self._names[i])
 
     def __len__(self) -> int:
         return self._n_data
