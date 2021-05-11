@@ -46,7 +46,7 @@ def test(args, split):
     ckpt_filename = join(args.result_path, 'ckpt', args.ckpt_name)
     ckpt = torch.load(ckpt_filename)['state_dict']
 
-    decoder = Decoder(**args, cur_ckpt)
+    decoder = Decoder(args, ckpt)
     save_path = join(args.result_path, f'decode/{args.ckpt_name}')
     if not os.path.exists(save_path):
         os.mkdir(save_path)
