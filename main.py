@@ -1,63 +1,28 @@
-import argparse
 import json
 import os
 from os.path import join, exists
-import pickle as pkl
 import random #
 from time import time
 from datetime import timedelta
 
-from cytoolz import compose
-
 import torch
-from torch import optim
-from torch.nn import functional as F
-from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader
 
-from encoder import SummarizerEncoder
+from extract import SummarizerEncoder
 from model.util import sequence_loss
-from decoding import Extractor, DecodeDataset
+from decoding import Decoder, DecodeDataset
 from decoding import sort_ckpt, get_n_ext
 from evaluate import eval_rouge
 
-from utils import PAD, UNK
-from utils import make_vocab, make_embedding
-
 from data.data import ImgDmDataset
 from data.batcher import tokenize
-from data.batcher import coll_fn_extract
-from data.batcher import prepro_fn_extract
-from data.batcher import convert_batch_extract_ptr
-from data.batcher import batchify_fn_extract_ptr
-from data.batcher import BucketedGenerater
 
-import warnings
+import warningssuper().__init__()
 warnings.filterwarnings("ignore", category=Warning)
-
-BUCKET_SIZE = 6400
 
 DATA_DIR = './IMGDM'
 
-class ExtractDataset(ImgDmDataset):
-    """ article sentences -> extraction indices
-    (dataset created by greedily matching ROUGE)
-    """
-    def __init__(self, split):
-        super().__init__(split, DATA_DIR)
-
-    def __getitem__(self, i):
-        js_data = super().__getitem__(i)
-        
-        if type(js_data) is tuple: # If this is a previous sample
-            return js_data
-        
-        art_sents, extracts = js_data['article'], js_data['label']
-        return art_sents, extracts
-
 def test(args, split):
-    ext_dir = args.result_path
-    ckpts = sort_ckpt(ext_dir)
 
     #setup loader
     def coll(batch):
@@ -77,64 +42,59 @@ def test(args, split):
         
     if not os.path.exists(join(args.result_path, 'ROUGE')):
         os.mkdir(join(args.result_path, 'ROUGE'))
-        
-    for i in range(min(5, len(ckpts))):
-        print('Start loading checkpoint {} !'.format(ckpts[i]))
-        cur_ckpt = torch.load(
-                   join(ext_dir, 'ckpt/{}'.format(ckpts[i]))
-        )['state_dict']
-        extractor, _ = Extractor(ext_dir, cur_ckpt, cuda=args.cuda)
-        save_path = join(args.result_path, 'decode/{}'.format(ckpts[i]))
-        if not os.path.exists(save_path):
-            os.mkdir(save_path)
+    
+    ckpt_filename = join(args.result_path, 'ckpt', args.ckpt_name)
+    ckpt = torch.load(ckpt_filename)['state_dict']
 
-        # decoding
-        ext_list = []
-        cur_idx = 0
-        start = time()
-        with torch.no_grad():
-            for raw_article_batch in loader:
-                tokenized_article_batch = map(tokenize(None, args), raw_article_batch)
-                for raw_art_sents in tokenized_article_batch:
-                    ext_idx, _ = extractor(raw_art_sents)
-                    ext_list.append(ext_idx)
-                    cur_idx += 1
-                    print('{}/{} ({:.2f}%) decoded in {} seconds\r'.format(
-                          cur_idx, n_data, cur_idx/n_data*100, timedelta(seconds=int(time()-start))
-                    ), end='')
-        print()
+    decoder = Decoder(args, cur_ckpt)
+    save_path = join(args.result_path, f'decode/{args.ckpt_name}')
+    if not os.path.exists(save_path):
+        os.mkdir(save_path)
 
-        # write files
-        for file_idx, ext_ids in enumerate(ext_list):
-            dec = []
-            data_path = join(DATA_DIR, '{}/{}.json'.format(split, file_idx))
-            with open(data_path) as f:
-                data = json.loads(f.read())
-            n_ext = 3
-            n_ext = min(n_ext, len(data['article']))
-            for j in range(n_ext):
-                sent_idx = ext_ids[j]
-                dec.append(data['article'][sent_idx])
-            with open(join(save_path, '{}.dec'.format(file_idx)), 'w') as f:
-                for sent in dec:
-                    print(sent, file=f)
-        
-        # evaluate current model
-        print('Starting evaluating ROUGE !')
-        dec_path = save_path
-        ref_path = join(DATA_DIR, 'refs/{}'.format(split))
-        print("eval_rouge")
-        ROUGE = eval_rouge(dec_path, ref_path)
-        print(ROUGE)
-        with open(join(args.result_path, 'ROUGE/{}.txt'.format(ckpts[i])), 'w') as f:
-            print(ROUGE, file=f)
+    # decoding
+    ext_list = []
+    cur_idx = 0
+    start = time()
+    with torch.no_grad():
+        for raw_article_batch in loader:
+            tokenized_article_batch = map(tokenize(None), raw_article_batch)
+            for raw_art_sents in tokenized_article_batch:
+                ext_idx = decoder(raw_art_sents)
+                ext_list.append(ext_idx)
+                cur_idx += 1
+                print('{}/{} ({:.2f}%) decoded in {} seconds\r'.format(
+                        cur_idx, n_data, cur_idx/n_data*100, timedelta(seconds=int(time()-start))
+                ), end='')
+    print()
 
-def trained_encoder(args, split):
-    result_path = args.result_path
-    print(result_path)
+    # write files
+    for file_idx, ext_ids in enumerate(ext_list):
+        dec = []
+        data_path = join(DATA_DIR, '{}/{}.json'.format(split, file_idx))
+        with open(data_path) as f:
+            data = json.loads(f.read())
+        n_ext = 3
+        n_ext = min(n_ext, len(data['article']))
+        for j in range(n_ext):
+            sent_idx = ext_ids[j]
+            dec.append(data['article'][sent_idx])
+        with open(join(save_path, '{}.dec'.format(file_idx)), 'w') as f:
+            for sent in dec:
+                print(sent, file=f)
+    
+    # evaluate current model
+    print('Starting evaluating ROUGE !')
+    dec_path = save_path
+    ref_path = join(DATA_DIR, 'refs/{}'.format(split))
+    print("eval_rouge")
+    ROUGE = eval_rouge(dec_path, ref_path)
+    print(ROUGE)
+    with open(join(args.result_path, f'ROUGE/{args.ckpt_name}.txt'), 'w') as f:
+        print(ROUGE, file=f)
 
-    print(args.project_path)
+def get_encoded(args, split):
 
+    # setup loader
     def coll(batch):
             articles = list(filter(bool, batch))
             return articles
@@ -142,26 +102,27 @@ def trained_encoder(args, split):
     n_data = len(dataset)
 
     loader = DataLoader(dataset, batch_size=args.batch,
-                        shuffle=False, num_workers=4, collate_fn=coll)
+                        shuffle=False, num_workers=2, collate_fn=coll)
 
-    ckpt_filename = join(result_path, 'ckpt', args.ckpt_name)
+    ckpt_filename = join(args.result_path, 'ckpt', args.ckpt_name)
     ckpt = torch.load(ckpt_filename)['state_dict']
 
-    extractor = Extractor(result_path, ckpt, cuda=args.cuda)
+    encoder = SummarizerEncoder(args)
+    encoder.load_state_dict(ckpt)
     
     enc_list = []
     cur_idx = 0
     start = time()
     with torch.no_grad():
         for raw_article_batch in loader:
-            tokenized_article_batch = map(tokenize(None, args.emb_type), raw_article_batch)
+            tokenized_article_batch = map(tokenize(None), raw_article_batch)
             for raw_art_sents in tokenized_article_batch:
-            enc_out = extractor.get_enc_out(raw_art_sents)
-            enc_list.append(enc_out)
-            cur_idx += 1
-            print('{}/{} ({:.2f}%) encoded in {} seconds\r'.format(
-                    cur_idx, n_data, cur_idx/n_data*100, timedelta(seconds=int(time()-start))
-            ), end='')
+                enc_out = encoder(raw_art_sents)
+                enc_list.append(enc_out)
+                cur_idx += 1
+                print('{}/{} ({:.2f}%) encoded in {} seconds\r'.format(
+                        cur_idx, n_data, cur_idx/n_data*100, timedelta(seconds=int(time()-start))
+                ), end='')
     print(enc_list[0].size())
     return enc_list
 
@@ -172,6 +133,9 @@ class argWrapper(object):
                project_path='.',
                batch=32,
                cuda=torch.cuda.is_available(),
+               emb_dim=128,
+               vocab_size=30004,
+               conv_hidden=100,
                encoder_layer=12,
                encoder_hidden=512):
     self.ckpt_name = ckpt_name
@@ -179,13 +143,16 @@ class argWrapper(object):
     self.project_path = project_path
     self.batch = batch
     self.cuda = cuda
+    self.emb_dim = emb_dim
+    self.vocab_size = vocab_size
+    self.conv_hidden = conv_hidden
     self.encoder_layer = encoder_layer
     self.encoder_hidden = encoder_hidden
 
 if __name__ == '__main__':
     args = argWrapper('ckpt-0.313407-3000')
 
-    enc_list = trained_encoder(args, 'test')
+    enc_list = get_encoded(args, 'test')
 
 
 

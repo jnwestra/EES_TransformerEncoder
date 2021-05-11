@@ -10,7 +10,7 @@ from itertools import starmap
 from cytoolz import curry
 
 from utils import PAD, UNK, START, END
-from encoder import SummarizerEncoder
+from extract import Summarizer
 #from model.rl import ActorCritic
 from data.batcher import conver2id, pad_batch_tensorize
 from data.data import ImgDmDataset
@@ -50,12 +50,10 @@ def get_n_ext(split, idx):
     else:
         return 3
 
-class Extractor(object):
-    def __init__(self, ext_dir, ext_ckpt, max_ext=6, cuda=True):
-        ext_meta = json.load(open(join(ext_dir, 'meta.json')))
-        ext_args = ext_meta['model_args']
-        extractor = SummarizerEncoder(**ext_args)
-        extractor.load_state_dict(ext_ckpt)
+class Decoder(object):
+    def __init__(self, args, ckpt, max_ext=6, cuda=True):
+        extractor = Summarizer(args)
+        extractor.load_state_dict(ckpt)
 
         word2id = pkl.load(open(join(ext_dir, 'vocab.pkl'), 'rb'))
         self._word2id = word2id
