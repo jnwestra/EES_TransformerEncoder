@@ -106,6 +106,14 @@ def get_encoded(args, split):
 
     ckpt_filename = join(args.result_path, 'ckpt', args.ckpt_name)
     ckpt = torch.load(ckpt_filename)['state_dict']
+    
+    def del_key(state_dict, key)
+        try:
+            del state_dict[key]
+        except KeyError:
+            pass
+    for key in ['_ws.weight', '_ws.bias']:
+        del_key(ckpt, key)
 
     encoder = SummarizerEncoder(args.emb_dim, args.vocab_size, args.conv_hidden,
                                 args.encoder_hidden, args.encoder_layer)
