@@ -23,6 +23,7 @@ class DecodeDataset(ImgDmDataset):
         super().__init__(split, path)
 
     def __getitem__(self, i):
+        print(i)
         js_data = super().__getitem__(i)
         art_sents = js_data['article']
         return art_sents
