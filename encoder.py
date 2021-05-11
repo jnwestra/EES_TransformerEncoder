@@ -34,7 +34,7 @@ class SummarizerEncoder(nn.Module):
             get_sinusoid_encoding_table(1000, enc_out_dim, padding_idx=0),
             freeze=True)
         
-        SL decoder
+        # SL decoder
         self._ws = nn.Linear(enc_out_dim, 2)
 
 

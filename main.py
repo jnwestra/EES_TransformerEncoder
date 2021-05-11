@@ -176,8 +176,8 @@ class argWrapper(object):
     self.project_path = project_path
     self.batch = batch
     self.cuda = cuda
-    self.encoder_layer = 12
-    self.encoder_hidden = 512
+    self.encoder_layer = encoder_layer
+    self.encoder_hidden = encoder_hidden
 
 if __name__ == '__main__':
     args = argWrapper('ckpt-0.313407-3000')
