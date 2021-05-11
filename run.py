@@ -17,7 +17,7 @@ from evaluate import eval_rouge
 from data.data import ImgDmDataset
 from data.batcher import tokenize
 
-import warningssuper
+import warnings
 warnings.filterwarnings("ignore", category=Warning)
 
 import sys
