@@ -6,7 +6,7 @@ from transformer.Layers import EncoderLayer
 
 class TransformerEncoder(nn.Module):
 
-    def __init__(self, input_size, hidden_size, n_layer, decoder, ff_size=2048, n_head=16, dropout=0.2):
+    def __init__(self, input_size, hidden_size, n_layer, decoder='SL', ff_size=2048, n_head=16, dropout=0.2):
 
         super(TransformerEncoder, self).__init__()
 		
