@@ -107,7 +107,8 @@ def get_encoded(args, split):
     ckpt_filename = join(args.result_path, 'ckpt', args.ckpt_name)
     ckpt = torch.load(ckpt_filename)['state_dict']
 
-    encoder = SummarizerEncoder(**args)
+    encoder = SummarizerEncoder(args.vocab_size, args.conv_hidden,
+                                args.encoder_hidden, args.encoder_layer)
     encoder.load_state_dict(ckpt)
     
     enc_list = []
