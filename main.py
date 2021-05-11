@@ -131,11 +131,14 @@ def test(args, split):
 
 def trained_encoder(args, split):
     result_path = args.result_path
+    print(result_path)
+
+    print(args.project_path)
 
     def coll(batch):
             articles = list(filter(bool, batch))
             return articles
-    dataset = DecodeDataset(split,args.project_path)
+    dataset = DecodeDataset(split,join(args.project_path,DATA_DIR))
     n_data = len(dataset)
 
     loader = DataLoader(dataset, batch_size=args.batch,
