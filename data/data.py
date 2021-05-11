@@ -6,6 +6,13 @@ from os.path import join, isfile
 
 from torch.utils.data import Dataset
 
+def _get_names(path):
+    """ get names of and count number of data in the given path"""
+    matcher = re.compile(r'[0-9]+\.json')
+    match = lambda name: bool(matcher.match(name))
+    names = [filename for filename in os.listdir(path) if isfile(filename)]
+    n_data = len(list(filter(match, names)))
+    return names, n_data
 
 class ImgDmDataset(Dataset):
     def __init__(self, split: str, path: str) -> None:
@@ -22,11 +29,3 @@ class ImgDmDataset(Dataset):
         with open(join(self._data_path, self._names[i])) as f:
             js = json.loads(f.read())
         return js
-
-def _get_names(path):
-    """ get names of and count number of data in the given path"""
-    matcher = re.compile(r'[0-9]+\.json')
-    match = lambda name: bool(matcher.match(name))
-    names = [filename for filename in os.listdir(path) if isfile(filename)]
-    n_data = len(list(filter(match, names)))
-    return names, n_data
