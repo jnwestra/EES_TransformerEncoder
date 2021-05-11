@@ -156,7 +156,7 @@ def trained_encoder(args, split):
         for raw_article_batch in loader:
             tokenized_article_batch = map(tokenize(None, args.emb_type), raw_article_batch)
             for raw_art_sents in tokenized_article_batch:
-            _, enc_out = extractor(raw_art_sents)
+            enc_out = extractor.get_enc_out(raw_art_sents)
             enc_list.append(enc_out)
             cur_idx += 1
             print('{}/{} ({:.2f}%) encoded in {} seconds\r'.format(

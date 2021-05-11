@@ -45,11 +45,28 @@ class SummarizerEncoder(nn.Module):
         output = self._ws(enc_out)
         assert output.size() == (bs,seq_len,2)
 
-        return output, enc_out
+        return output
+
+    def get_enc_out(self, article_sents):
+        enc_out = self._encode(article_sents, None)
+        return enc_out
+
+    def extract(self, article_sents, sent_nums=None, k=4):
+        enc_out = self._encode(article_sents, sent_nums)
+        
+        seq_len = enc_out.size(1)
+        output = self._ws(enc_out)
+        assert output.size() == (1, seq_len, 2)
+        _, indices = output[:, :, 1].sort(descending=True)
+        extract = []
+        for i in range(k):
+            extract.append(indices[0][i].item())
+
+        return extract
 
     def _encode(self, article_sents, sent_nums):
         hidden_size = self._art_enc.input_size
-
+        print(article_sents[0])
         if sent_nums is None:
             enc_sent = self._sent_enc(article_sents[0]).unsqueeze(0)
         else:

@@ -54,7 +54,7 @@ class Extractor(object):
     def __init__(self, ext_dir, ext_ckpt, max_ext=6, cuda=True):
         ext_meta = json.load(open(join(ext_dir, 'meta.json')))
         ext_args = ext_meta['model_args']
-        _, extractor = SummarizerEncoder(**ext_args)
+        extractor = SummarizerEncoder(**ext_args)
         extractor.load_state_dict(ext_ckpt)
 
         word2id = pkl.load(open(join(ext_dir, 'vocab.pkl'), 'rb'))
@@ -64,6 +64,9 @@ class Extractor(object):
         self._net = extractor.to(self._device)
         ## self._id2word = {i: w for w, i in word2id.items()}
         self._max_ext = max_ext
+
+    def get_enc_out(self, raw_article_sents):
+        return extractor.get_enc_out(raw_article_sents)
 
     def __call__(self, raw_article_sents):
         self._net.eval()
