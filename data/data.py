@@ -11,7 +11,7 @@ class ImgDmDataset(Dataset):
     def __init__(self, split: str, path: str) -> None:
         assert split in ['train', 'val', 'test']
         self._data_path = join(path, split)
-        self._names, self._n_data = _get_names()
+        self._names, self._n_data = self._get_names()
         print(self._data_path)
         print(self._names[i])
 
