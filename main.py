@@ -107,7 +107,7 @@ def get_encoded(args, split):
     ckpt_filename = join(args.result_path, 'ckpt', args.ckpt_name)
     ckpt = torch.load(ckpt_filename)['state_dict']
     
-    def del_key(state_dict, key)
+    def del_key(state_dict, key):
         try:
             del state_dict[key]
         except KeyError:
