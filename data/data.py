@@ -12,13 +12,13 @@ class ImgDmDataset(Dataset):
         assert split in ['train', 'val', 'test']
         self._data_path = join(path, split)
         self._names, self._n_data = _get_names()
+        print(self._data_path)
+        print(self._names[i])
 
     def __len__(self) -> int:
         return self._n_data
 
     def __getitem__(self, i: int):
-        print(self._data_path)
-        print(self._names[i])
         with open(join(self._data_path, self._names[i])) as f:
             js = json.loads(f.read())
         return js
