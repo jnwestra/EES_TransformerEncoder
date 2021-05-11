@@ -52,7 +52,7 @@ def get_n_ext(split, idx):
 
 class Decoder(object):
     def __init__(self, args, ckpt, max_ext=6):
-        extractor = Summarizer(args.vocab_size, args.conv_hidden,
+        extractor = Summarizer(args.emb_dim, args.vocab_size, args.conv_hidden,
                                 args.encoder_hidden, args.encoder_layer)
         extractor.load_state_dict(ckpt)
 
