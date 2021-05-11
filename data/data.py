@@ -2,7 +2,7 @@
 import json
 import re
 import os
-from os.path import join
+from os.path import join, isfile
 
 from torch.utils.data import Dataset
 
@@ -27,6 +27,6 @@ class ImgDmDataset(Dataset):
         """ get names of and count number of data in the given path"""
         matcher = re.compile(r'[0-9]+\.json')
         match = lambda name: bool(matcher.match(name))
-        names = os.listdir(self._data_path)
+        names = [filename in os.listdir(self._data_path) if isfile(filename)]
         n_data = len(list(filter(match, names)))
         return names, n_data
