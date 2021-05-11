@@ -27,6 +27,6 @@ class ImgDmDataset(Dataset):
         """ get names of and count number of data in the given path"""
         matcher = re.compile(r'[0-9]+\.json')
         match = lambda name: bool(matcher.match(name))
-        names = [filename in os.listdir(self._data_path) if isfile(filename)]
+        names = [filename for filename in os.listdir(self._data_path) if isfile(filename)]
         n_data = len(list(filter(match, names)))
         return names, n_data
