@@ -11,7 +11,7 @@ class ImgDmDataset(Dataset):
     def __init__(self, split: str, path: str) -> None:
         assert split in ['train', 'val', 'test']
         self._data_path = join(path, split)
-        self._names, self._n_data = self._get_names()
+        self._names, self._n_data = _get_names(self._data_path)
         print(self._data_path)
         print(self._names[i])
 
@@ -23,10 +23,10 @@ class ImgDmDataset(Dataset):
             js = json.loads(f.read())
         return js
 
-    def _get_names(self):
-        """ get names of and count number of data in the given path"""
-        matcher = re.compile(r'[0-9]+\.json')
-        match = lambda name: bool(matcher.match(name))
-        names = [filename for filename in os.listdir(self._data_path) if isfile(filename)]
-        n_data = len(list(filter(match, names)))
-        return names, n_data
+def _get_names(path):
+    """ get names of and count number of data in the given path"""
+    matcher = re.compile(r'[0-9]+\.json')
+    match = lambda name: bool(matcher.match(name))
+    names = [filename for filename in os.listdir(path) if isfile(filename)]
+    n_data = len(list(filter(match, names)))
+    return names, n_data
