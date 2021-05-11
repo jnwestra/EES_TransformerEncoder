@@ -96,8 +96,8 @@ def get_encoded(args, split):
 
     # setup loader
     def coll(batch):
-            articles = list(filter(bool, batch))
-            return articles
+        articles = list(filter(bool, batch))
+        return articles
     dataset = DecodeDataset(split,join(args.project_path,DATA_DIR))
     n_data = len(dataset)
 
