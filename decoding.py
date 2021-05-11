@@ -52,7 +52,7 @@ def get_n_ext(split, idx):
 
 class Decoder(object):
     def __init__(self, args, ckpt, max_ext=6):
-        extractor = Summarizer(args)
+        extractor = Summarizer(**args)
         extractor.load_state_dict(ckpt)
 
         word2id = pkl.load(open(join(args.result_path, 'vocab.pkl'), 'rb'))
