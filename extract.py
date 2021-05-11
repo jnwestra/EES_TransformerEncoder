@@ -16,7 +16,7 @@ MAX_ARTICLE_LEN = 512
 
 # Copy of Summarizer class from original EES, but with only W2V, Transformer, and SL
 class Summarizer(nn.Module):
-    (self, emb_dim, vocab_size, conv_hidden, encoder_hidden,
+    def __init__(self, emb_dim, vocab_size, conv_hidden, encoder_hidden,
         encoder_layer, isTrain=False, n_hop=1, dropout=0.0):
 
         super().__init__()
