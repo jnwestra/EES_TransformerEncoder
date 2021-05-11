@@ -28,7 +28,7 @@ def test(args, split):
     def coll(batch):
         articles = list(filter(bool, batch))
         return articles
-    dataset = DecodeDataset(split, args.result_path)
+    dataset = DecodeDataset(split, join(args.project_path,DATA_DIR))
 
     n_data = len(dataset)
     loader = DataLoader(dataset, batch_size=args.batch,
