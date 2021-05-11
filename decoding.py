@@ -13,7 +13,7 @@ from utils import PAD, UNK, START, END
 from extract import Summarizer
 #from model.rl import ActorCritic
 from data.batcher import conver2id, pad_batch_tensorize
-from data.data import ImgDmDataset, get_names
+from data.data import ImgDmDataset, list_data
 
 
 class DecodeDataset(ImgDmDataset):
