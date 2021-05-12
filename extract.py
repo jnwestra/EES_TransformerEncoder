@@ -218,17 +218,7 @@ class SummarizerEncoder(nn.Module):
         
         batch_size, seq_len = enc_sent.size(0), enc_sent.size(1)
 
-        # prepare mask
-        if sent_nums != None:
-            input_len = len_mask(sent_nums, enc_sent.get_device()).float() # [batch_size, seq_len]
-        else:
-            input_len = torch.ones(batch_size, seq_len).float().cuda()
-
-        print(enc_sent.size(), input_len.size())
-
-        attn_mask = input_len.eq(0.0).unsqueeze(1).expand(batch_size, 
-                    seq_len, seq_len).cuda() # [batch_size, seq_len, seq_len]
-        non_pad_mask = input_len.unsqueeze(-1).cuda()  # [batch, seq_len, 1]
+        # Removed masks
 
         # add postional embedding
         if sent_nums != None:
@@ -239,10 +229,8 @@ class SummarizerEncoder(nn.Module):
 
         inputs = self._emb_w(enc_sent) + self.sent_pos_embed(sent_pos)
 
-        assert attn_mask.size() == (batch_size, seq_len, seq_len)
-        assert non_pad_mask.size() == (batch_size, seq_len, 1)
         
-        output = self._art_enc(inputs, non_pad_mask, attn_mask).to('cuda')
+        output = self._art_enc(inputs, None, None).to('cuda')
         return output
 
     def set_embedding(self, embedding):
