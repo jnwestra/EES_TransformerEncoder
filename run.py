@@ -151,7 +151,6 @@ def get_encoded(args, split):
         cur_idx = 0
         start = time()
         log_file.write(f'Getting encoded article sentences at {str(timedelta(seconds=start%86400))}\n')
-        log_file.write(f'{loader[0]}\n')
         with torch.no_grad():
             for raw_article_batch in loader:
                 tokenized_article_batch = map(tokenize(None), raw_article_batch)

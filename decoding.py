@@ -22,7 +22,7 @@ class DecodeDataset(ImgDmDataset):
         super().__init__(path, log_file)
 
     def __getitem__(self, i):
-        assert i is int
+        log_file.write(f'Dataloader indexing with type {type(i)}\n')
         js_data, name = super().__getitem__(i)
         art_sents = js_data['article']
         return art_sents
