@@ -134,10 +134,11 @@ def get_encoded(args, split):
     enc_list = []
     cur_idx = 0
     start = time()
+    log_file.write('Getting encoded article sentences')
     with torch.no_grad():
         for raw_article_batch in loader:
             tokenized_article_batch = map(tokenize(None), raw_article_batch)
-            log_file.write(str(tokenized_article_batch))
+            log_file.write(f'{str(tokenized_article_batch)}\n')
             for raw_art_sents in tokenized_article_batch:
                 enc_out = encoder(raw_art_sents)
                 enc_list.append(enc_out)
@@ -154,7 +155,7 @@ class argWrapper(object):
                ckpt_name,
                result_path='./result',
                project_path='.',
-               batch=32,
+               batch=1,
                cuda=torch.cuda.is_available(),
                emb_dim=128,
                vocab_size=30004,
