@@ -11,7 +11,6 @@ from torch.utils.data import DataLoader
 from extract import SummarizerEncoder
 from model.util import sequence_loss
 from decoding import Decoder, DecodeDataset
-from decoding import sort_ckpt, get_n_ext
 from evaluate import eval_rouge
 
 from data.data import ImgDmDataset
@@ -47,7 +46,12 @@ def test(args, split):
         os.mkdir(join(args.result_path, 'ROUGE'))
     
     ckpt_filename = join(args.result_path, 'ckpt', args.ckpt_name)
-    ckpt = torch.load(ckpt_filename)['state_dict']
+    
+    def load_ckpt(ckpt_filename, cuda):
+        dev = 'gpu' if cuda else 'cpu'
+        return torch.load(ckpt_filename, map_location=torch.device(dev))['state_dict']
+
+    ckpt = load_ckpt(ckpt_filename, args.cuda)
 
     decoder = Decoder(args, ckpt)
     save_path = join(args.result_path, f'decode/{args.ckpt_name}')
@@ -73,7 +77,7 @@ def test(args, split):
     # write files
     for file_idx, ext_ids in enumerate(ext_list):
         dec = []
-        data_path = join(DATA_DIR, '{}/{}.json'.format(split, file_idx))
+        data_path = join(project_path, DATA_DIR, '{}/{}.json'.format(split, file_idx))
         with open(data_path) as f:
             data = json.loads(f.read())
         n_ext = 3
@@ -88,7 +92,7 @@ def test(args, split):
     # evaluate current model
     print('Starting evaluating ROUGE !')
     dec_path = save_path
-    ref_path = join(DATA_DIR, 'refs/{}'.format(split))
+    ref_path = join(args.project_path, DATA_DIR, 'refs/{}'.format(split))
     print("eval_rouge")
     ROUGE = eval_rouge(dec_path, ref_path)
     print(ROUGE)
@@ -108,8 +112,13 @@ def get_encoded(args, split):
                         shuffle=False, num_workers=2, collate_fn=coll)
 
     ckpt_filename = join(args.result_path, 'ckpt', args.ckpt_name)
-    ckpt = torch.load(ckpt_filename)['state_dict']
     
+    def load_ckpt(ckpt_filename, cuda):
+        dev = 'gpu' if cuda else 'cpu'
+        return torch.load(ckpt_filename, map_location=torch.device(dev))['state_dict']
+
+    ckpt = load_ckpt(ckpt_filename, args.cuda)
+
     def del_key(state_dict, key):
         try:
             del state_dict[key]
