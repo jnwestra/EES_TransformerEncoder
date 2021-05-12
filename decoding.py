@@ -20,9 +20,10 @@ class DecodeDataset(ImgDmDataset):
     """ get the article sentences only (for decoding use)"""
     def __init__(self, path, log_file):
         super().__init__(path, log_file)
+        self.log_file = log_file
 
     def __getitem__(self, i):
-        log_file.write(f'Dataloader indexing with type {type(i)}\n')
+        self.log_file.write(f'Dataloader indexing with type {type(i)}\n')
         js_data, name = super().__getitem__(i)
         art_sents = js_data['article']
         return art_sents
