@@ -101,8 +101,6 @@ def test(args, split):
 
 def get_encoded(args, split):
 
-    log_file = open(args.log_filename,'w')
-
     # setup loader
     def coll(batch):
         articles = list(filter(bool, batch))
@@ -132,23 +130,24 @@ def get_encoded(args, split):
                                 args.encoder_hidden, args.encoder_layer)
     encoder.load_state_dict(ckpt)
     
-    enc_list = []
-    cur_idx = 0
-    start = time()
-    log_file.write(f'Getting encoded article sentences at {str(timedelta(seconds=start%86400))}')
-    with torch.no_grad():
-        for raw_article_batch in loader:
-            tokenized_article_batch = map(tokenize(None), raw_article_batch)
-            log_file.write(f'{str(tokenized_article_batch)}\n')
-            for raw_art_sents in tokenized_article_batch:
-                enc_out = encoder(raw_art_sents)
-                enc_list.append(enc_out)
-                cur_idx += 1
-                print('{}/{} ({:.2f}%) encoded in {} seconds\r'.format(
-                        cur_idx, n_data, cur_idx/n_data*100, timedelta(seconds=int(time()-start))
-                ), end='')
+    with open(args.log_filename,'w') as log_file:
+        enc_list = []
+        cur_idx = 0
+        start = time()
+        log_file.write(f'Getting encoded article sentences at {str(timedelta(seconds=start%86400))}')
+        with torch.no_grad():
+            for raw_article_batch in loader:
+                tokenized_article_batch = map(tokenize(None), raw_article_batch)
+                log_file.write(f'{str(tokenized_article_batch)}\n')
+                for raw_art_sents in tokenized_article_batch:
+                    enc_out = encoder(raw_art_sents)
+                    enc_list.append(enc_out)
+                    cur_idx += 1
+                    print('{}/{} ({:.2f}%) encoded in {} seconds\r'.format(
+                            cur_idx, n_data, cur_idx/n_data*100, timedelta(seconds=int(time()-start))
+                    ), end='')
+        log_file.close()
 
-    log_file.close()
     return enc_list
 
 class argWrapper(object):
