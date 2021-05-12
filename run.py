@@ -130,7 +130,9 @@ def get_encoded(args, split):
                                 args.encoder_hidden, args.encoder_layer)
     encoder.load_state_dict(ckpt)
     
-    with open(args.log_filename,'w') as log_file:
+    log_filename = join(args.log_path, f'summ_str(time()).txt')
+
+    with open(log_filename,'w') as log_file:
         enc_list = []
         cur_idx = 0
         start = time()
@@ -162,7 +164,7 @@ class argWrapper(object):
                conv_hidden=100,
                encoder_layer=12,
                encoder_hidden=512,
-               log_filename='./log.txt'):
+               log_path='./log.txt'):
     self.ckpt_name = ckpt_name
     self.result_path = result_path
     self.project_path = project_path
@@ -173,4 +175,4 @@ class argWrapper(object):
     self.conv_hidden = conv_hidden
     self.encoder_layer = encoder_layer
     self.encoder_hidden = encoder_hidden
-    self.log_filename = log_filename
+    self.log_path = log_path
