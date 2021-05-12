@@ -3,6 +3,7 @@ from torch import nn
 from torch.nn import init
 from torch.nn import functional as F
 from model.TransformerEncoder import TransformerEncoder
+from model.util import sequence_mean, len_mask
 
 import os
 from os.path import join
