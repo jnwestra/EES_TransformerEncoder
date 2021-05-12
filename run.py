@@ -47,11 +47,10 @@ def test(args, split):
     
     ckpt_filename = join(args.result_path, 'ckpt', args.ckpt_name)
     
-    def load_ckpt(ckpt_filename, cuda):
-        dev = 'cuda' if cuda else 'cpu'
-        return torch.load(ckpt_filename, map_location=torch.device(dev))['state_dict']
+    def load_ckpt(ckpt_filename):
+        return torch.load(ckpt_filename)['state_dict']
 
-    ckpt = load_ckpt(ckpt_filename, args.cuda)
+    ckpt = load_ckpt(ckpt_filename)
 
     decoder = Decoder(args, ckpt)
     save_path = join(args.result_path, f'decode/{args.ckpt_name}')
@@ -113,12 +112,10 @@ def get_encoded(args, split):
 
     ckpt_filename = join(args.result_path, 'ckpt', args.ckpt_name)
     
-    def load_ckpt(ckpt_filename, cuda):
-        print(args.cuda)
-        dev = 'cuda' if cuda else 'cpu'
-        return torch.load(ckpt_filename, map_location=torch.device(dev))['state_dict']
+    def load_ckpt(ckpt_filename):
+        return torch.load(ckpt_filename)['state_dict']
 
-    ckpt = load_ckpt(ckpt_filename, args.cuda)
+    ckpt = load_ckpt(ckpt_filename)
 
     def del_key(state_dict, key):
         try:
