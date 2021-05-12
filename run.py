@@ -160,7 +160,7 @@ def get_encoded(args, split):
                             cur_idx, n_data, cur_idx/n_data*100, timedelta(seconds=int(time()-start))
                     ), end='')
 
-        log_file.write('-'*20)
+        log_file.write('-'*20 + '\n')
         log_file.close()
 
     return enc_list
