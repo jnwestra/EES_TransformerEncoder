@@ -161,7 +161,7 @@ class argWrapper(object):
                conv_hidden=100,
                encoder_layer=12,
                encoder_hidden=512,
-               log_filename=None):
+               log_filename='./log.txt'):
     self.ckpt_name = ckpt_name
     self.result_path = result_path
     self.project_path = project_path
@@ -172,4 +172,4 @@ class argWrapper(object):
     self.conv_hidden = conv_hidden
     self.encoder_layer = encoder_layer
     self.encoder_hidden = encoder_hidden
-    self.log_file = log_filename
+    self.log_filename = log_filename
