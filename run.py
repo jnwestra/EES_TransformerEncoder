@@ -143,10 +143,10 @@ def get_encoded(args, split):
                     enc_out = encoder(raw_art_sents)
                     enc_list.append(enc_out)
                     cur_idx += 1
-                    print('{}/{} ({:.2f}%) encoded in {} seconds\r'.format(
+                    log_file.write('{}/{} ({:.2f}%) encoded in {} seconds\r'.format(
                             cur_idx, n_data, cur_idx/n_data*100, timedelta(seconds=int(time()-start))
                     ), end='')
-        log_file.close()
+            log_file.close()
 
     return enc_list
 
