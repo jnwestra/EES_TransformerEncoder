@@ -48,7 +48,7 @@ def test(args, split):
     ckpt_filename = join(args.result_path, 'ckpt', args.ckpt_name)
     
     def load_ckpt(ckpt_filename, cuda):
-        dev = 'gpu' if cuda else 'cpu'
+        dev = 'cuda' if cuda else 'cpu'
         return torch.load(ckpt_filename, map_location=torch.device(dev))['state_dict']
 
     ckpt = load_ckpt(ckpt_filename, args.cuda)
