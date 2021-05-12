@@ -12,7 +12,8 @@ class ImgDmDataset(Dataset):
         self._data_path = path
         log_file.write(f'{os.listdir(path)}\n')
         self._names, self._n_data = list_data(self._data_path)
-        for name in self._names log_file.write(f'{name}\n')
+        for name in self._names:
+            log_file.write(f'{name}\n')
 
     def __len__(self) -> int:
         return self._n_data
