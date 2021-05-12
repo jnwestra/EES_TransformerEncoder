@@ -11,6 +11,7 @@ class ImgDmDataset(Dataset):
     def __init__(self, path: str, log_file: io.TextIOWrapper) -> None:
         self._data_path = path
         self._names, self._n_data = list_data(self._data_path)
+        for name in self._names print(log_file.write(f'{name}\n')
 
     def __len__(self) -> int:
         return self._n_data
@@ -18,7 +19,6 @@ class ImgDmDataset(Dataset):
     def __getitem__(self, i: int):
         with open(join(self._data_path, self._names[i])) as f:
             js = json.loads(f.read())
-        log_file.write(f'{_names[i]}\n')
         return js
 
 def list_data(path):
