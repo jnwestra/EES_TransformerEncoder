@@ -223,6 +223,8 @@ class SummarizerEncoder(nn.Module):
         else:
             input_len = torch.ones(batch_size, seq_len).float().cuda()
 
+        print(enc_sent.size(), input_len.size())
+
         attn_mask = input_len.eq(0.0).unsqueeze(1).expand(batch_size, 
                     seq_len, seq_len).cuda() # [batch_size, seq_len, seq_len]
         non_pad_mask = input_len.unsqueeze(-1).cuda()  # [batch, seq_len, 1]
