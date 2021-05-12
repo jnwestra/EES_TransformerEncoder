@@ -114,6 +114,7 @@ def get_encoded(args, split):
     ckpt_filename = join(args.result_path, 'ckpt', args.ckpt_name)
     
     def load_ckpt(ckpt_filename, cuda):
+        print(args.cuda)
         dev = 'cuda' if cuda else 'cpu'
         return torch.load(ckpt_filename, map_location=torch.device(dev))['state_dict']
 
