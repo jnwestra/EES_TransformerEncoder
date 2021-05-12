@@ -85,7 +85,7 @@ class Summarizer(nn.Module):
                  else s
                  for s, n in zip(enc_sents, sent_nums)],
                 dim=0
-            )
+                )
         
         # Pass to Transformer Encoder
         batch_size, seq_len = enc_sent.size(0), enc_sent.size(1)
@@ -214,8 +214,8 @@ class SummarizerEncoder(nn.Module):
             else s
             for s, n in zip(enc_sents, sent_nums)],
             dim=0
-        )
-
+            )
+        print(enc_sent.size)
         batch_size, seq_len = enc_sent.size(0), enc_sent.size(1)
 
         # prepare mask
