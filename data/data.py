@@ -10,6 +10,7 @@ from torch.utils.data import Dataset
 class ImgDmDataset(Dataset):
     def __init__(self, path: str, log_file: io.TextIOWrapper) -> None:
         self._data_path = path
+        for filename in os.listdir(path) log_file.write(filename) if isfile(filename) and filename.endswith('.json')
         self._names, self._n_data = list_data(self._data_path)
         for name in self._names log_file.write(f'{name}\n')
 
