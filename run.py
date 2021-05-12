@@ -133,7 +133,7 @@ def get_encoded(args, split):
     if not exists(args.log_path):
         os.makedirs(args.log_path)
 
-    log_filename = join(args.log_path, f'summ_str(time()).txt')
+    log_filename = join(args.log_path, f'summ_{str(time())}.txt')
 
     with open(log_filename,'w') as log_file:
         enc_list = []
