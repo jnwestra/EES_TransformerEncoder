@@ -215,7 +215,7 @@ class SummarizerEncoder(nn.Module):
             for s, n in zip(enc_sents, sent_nums)],
             dim=0
             )
-        print(input_len.size(),input_len.eq(0.0).unsqueeze(1))
+        
         batch_size, seq_len = enc_sent.size(0), enc_sent.size(1)
 
         # prepare mask
@@ -223,6 +223,8 @@ class SummarizerEncoder(nn.Module):
             input_len = len_mask(sent_nums, enc_sent.get_device()).float() # [batch_size, seq_len]
         else:
             input_len = torch.ones(batch_size, seq_len).float().cuda()
+
+        print(input_len.size(),input_len.eq(0.0).unsqueeze(1))
 
         attn_mask = input_len.eq(0.0).unsqueeze(1).expand(batch_size, 
                     seq_len, seq_len).cuda() # [batch_size, seq_len, seq_len]
