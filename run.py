@@ -100,6 +100,8 @@ def test(args, split):
 
 def get_encoded(args, split):
 
+    log_file = open(args.log_filename,'w')
+
     # setup loader
     def coll(batch):
         articles = list(filter(bool, batch))
@@ -135,7 +137,7 @@ def get_encoded(args, split):
     with torch.no_grad():
         for raw_article_batch in loader:
             tokenized_article_batch = map(tokenize(None), raw_article_batch)
-            args.log_file.write(str(tokenized_article_batch))
+            log_file.write(str(tokenized_article_batch))
             for raw_art_sents in tokenized_article_batch:
                 enc_out = encoder(raw_art_sents)
                 enc_list.append(enc_out)
@@ -143,6 +145,8 @@ def get_encoded(args, split):
                 print('{}/{} ({:.2f}%) encoded in {} seconds\r'.format(
                         cur_idx, n_data, cur_idx/n_data*100, timedelta(seconds=int(time()-start))
                 ), end='')
+
+    log_file.close()
     return enc_list
 
 class argWrapper(object):
@@ -157,7 +161,7 @@ class argWrapper(object):
                conv_hidden=100,
                encoder_layer=12,
                encoder_hidden=512,
-               log_file=None):
+               log_filename=None):
     self.ckpt_name = ckpt_name
     self.result_path = result_path
     self.project_path = project_path
@@ -168,4 +172,4 @@ class argWrapper(object):
     self.conv_hidden = conv_hidden
     self.encoder_layer = encoder_layer
     self.encoder_hidden = encoder_hidden
-    self.log_file = log_file
+    self.log_file = log_filename
