@@ -52,12 +52,12 @@ def get_n_ext(split, idx):
         return 3
 
 class Decoder(object):
-    def __init__(self, args, ckpt, max_ext=6):
+    def __init__(self, args, ckpt, data_root, max_ext=6):
         extractor = Summarizer(args.emb_dim, args.vocab_size, args.conv_hidden,
                                 args.encoder_hidden, args.encoder_layer)
         extractor.load_state_dict(ckpt)
 
-        word2id = pkl.load(open(join(args.result_path, 'vocab.pkl'), 'rb'))
+        word2id = pkl.load(open(join(data_root, 'vocab.pkl'), 'rb'))
         self._word2id = word2id
 
         self._device = torch.device('cuda' if args.cuda else 'cpu')
@@ -83,8 +83,8 @@ class ArticleBatcher(object):
         self._device = torch.device('cuda' if cuda else 'cpu')
 
     def __call__(self, raw_article_sents):
-        articles = conver2id(UNK, self._word2id, raw_article_sents)
-        article = pad_batch_tensorize(articles, PAD, cuda=False
+        article_sents = conver2id(UNK, self._word2id, raw_article_sents)
+        article = pad_batch_tensorize(article_sents, PAD, cuda=False
                                      ).to(self._device)
         return article
 

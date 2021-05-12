@@ -163,12 +163,13 @@ class Summarizer(nn.Module):
 
 class SummarizerEncoder(nn.Module):
     def __init__(self, emb_dim, vocab_size, conv_hidden, encoder_hidden,
-        encoder_layer, isTrain=False, n_hop=1, dropout=0.0):
+        encoder_layer, data_root, isTrain=False, n_hop=1, dropout=0.0):
 
-        super().__init__()
+        super().__init__(emb_dim, vocab_size, conv_hidden, encoder_hidden,
+            encoder_layer, isTrain=False, n_hop=1, dropout=0.0)
 
         self._device = torch.device('cuda' if args.cuda else 'cpu')
-        word2id = pkl.load(open(join(args.result_path, 'vocab.pkl'), 'rb'))
+        word2id = pkl.load(open(join(data_root, 'vocab.pkl'), 'rb'))
         self._word2id = word2id
 
 
@@ -185,24 +186,11 @@ class SummarizerEncoder(nn.Module):
             get_sinusoid_encoding_table(1000, enc_out_dim, padding_idx=0))
 
     def forward(self, raw_article_sents):
-        articles = conver2id(UNK, self._word2id, raw_article_sents)
-        article = pad_batch_tensorize(articles, PAD, cuda=False
+        article_sents = conver2id(UNK, self._word2id, raw_article_sents)
+        article = pad_batch_tensorize(article_sents, PAD, cuda=False
                                      ).to(self._device)
-        enc_out = self._encode(article_sents)
+        enc_out = self._encode([article])
         return enc_out
-
-    def extract(self, article_sents, sent_nums=None, k=4):
-        enc_out = self._encode(article_sents, sent_nums)
-        
-        seq_len = enc_out.size(1)
-        output = self._ws(enc_out)
-        assert output.size() == (1, seq_len, 2)
-        _, indices = output[:, :, 1].sort(descending=True)
-        extract = []
-        for i in range(k):
-            extract.append(indices[0][i].item())
-
-        return extract
 
     def _encode(self, article_sents):
         hidden_size = self._art_enc.input_size

@@ -31,8 +31,9 @@ def test(args, split):
     def coll(batch):
         articles = list(filter(bool, batch))
         return articles
-
-    data_path = join(args.project_path,DATA_DIR,split)
+    
+    data_root= join(args.project_path,DATA_DIR)
+    data_path = join(data_root,split)
     
     dataset = DecodeDataset(data_path)
 
@@ -56,7 +57,7 @@ def test(args, split):
 
     ckpt = load_ckpt(ckpt_filename)
 
-    decoder = Decoder(args, ckpt)
+    decoder = Decoder(args, ckpt, data_root)
     save_path = join(args.result_path, f'decode/{args.ckpt_name}')
     if not os.path.exists(save_path):
         os.mkdir(save_path)
@@ -115,8 +116,8 @@ def get_encoded(args, split):
         def coll(batch):
             articles = list(filter(bool, batch))
             return articles
-
-        data_path = join(args.project_path,DATA_DIR,split)
+        data_root= join(args.project_path,DATA_DIR)
+        data_path = join(data_root,split)
 
         log_file.write(f'Data stored in {data_path}\n')
 
@@ -144,7 +145,7 @@ def get_encoded(args, split):
             del_key(ckpt, key)
 
         encoder = SummarizerEncoder(args.emb_dim, args.vocab_size, args.conv_hidden,
-                                    args.encoder_hidden, args.encoder_layer)
+                                    args.encoder_hidden, args.encoder_layer, data_root)
         encoder.load_state_dict(ckpt)
 
         enc_list = []
