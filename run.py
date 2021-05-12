@@ -101,45 +101,46 @@ def test(args, split):
 
 def get_encoded(args, split):
 
-    # setup loader
-    def coll(batch):
-        articles = list(filter(bool, batch))
-        return articles
-    dataset = DecodeDataset(split,join(args.project_path,DATA_DIR))
-    n_data = len(dataset)
-
-    loader = DataLoader(dataset, batch_size=args.batch,
-        shuffle=False, num_workers=2 if args.cuda else 0, collate_fn=coll)
-
-    ckpt_filename = join(args.result_path, 'ckpt', args.ckpt_name)
-    
-    def load_ckpt(ckpt_filename):
-        return torch.load(ckpt_filename)['state_dict']
-
-    ckpt = load_ckpt(ckpt_filename)
-
-    def del_key(state_dict, key):
-        try:
-            del state_dict[key]
-        except KeyError:
-            pass
-    for key in ['_ws.weight', '_ws.bias']:
-        del_key(ckpt, key)
-
-    encoder = SummarizerEncoder(args.emb_dim, args.vocab_size, args.conv_hidden,
-                                args.encoder_hidden, args.encoder_layer)
-    encoder.load_state_dict(ckpt)
-    
     if not exists(args.log_path):
         os.makedirs(args.log_path)
 
     log_filename = join(args.log_path, f'summ_{str(time())}.txt')
 
     with open(log_filename,'w') as log_file:
+
+        # setup loader
+        def coll(batch):
+            articles = list(filter(bool, batch))
+            return articles
+        dataset = DecodeDataset(split,join(args.project_path,DATA_DIR))
+        n_data = len(dataset)
+
+        loader = DataLoader(dataset, batch_size=args.batch,
+            shuffle=False, num_workers=2 if args.cuda else 0, collate_fn=coll)
+
+        ckpt_filename = join(args.result_path, 'ckpt', args.ckpt_name)
+        
+        def load_ckpt(ckpt_filename):
+            return torch.load(ckpt_filename)['state_dict']
+
+        ckpt = load_ckpt(ckpt_filename)
+
+        def del_key(state_dict, key):
+            try:
+                del state_dict[key]
+            except KeyError:
+                pass
+        for key in ['_ws.weight', '_ws.bias']:
+            del_key(ckpt, key)
+
+        encoder = SummarizerEncoder(args.emb_dim, args.vocab_size, args.conv_hidden,
+                                    args.encoder_hidden, args.encoder_layer)
+        encoder.load_state_dict(ckpt)
+
         enc_list = []
         cur_idx = 0
         start = time()
-        log_file.write(f'Getting encoded article sentences at {str(timedelta(seconds=start%86400))}')
+        log_file.write(f'Getting encoded article sentences at {str(timedelta(seconds=start%86400))}\n')
         with torch.no_grad():
             for raw_article_batch in loader:
                 tokenized_article_batch = map(tokenize(None,raw_article_batch), raw_article_batch)
