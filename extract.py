@@ -4,6 +4,9 @@ from torch.nn import init
 from torch.nn import functional as F
 from model.TransformerEncoder import TransformerEncoder
 
+import os
+from os.path import join
+
 import numpy as np
 import math
 from math import sqrt
