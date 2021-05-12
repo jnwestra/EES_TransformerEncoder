@@ -23,7 +23,7 @@ warnings.filterwarnings("ignore", category=Warning)
 import sys
 sys.setrecursionlimit(10000)
 
-DATA_DIR = './IMGDM'
+DATA_DIR = 'IMGDM'
 
 def test(args, split):
 
