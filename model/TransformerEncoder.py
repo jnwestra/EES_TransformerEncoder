@@ -27,8 +27,6 @@ class TransformerEncoder(nn.Module):
         bs, seq_len = inputs.size(0), inputs.size(1)
 		
         assert inputs.size() == (bs, seq_len, self.hidden_size)
-        assert non_pad_mask.size() == (bs, seq_len, 1)
-        assert attn_mask.size() == (bs, seq_len, seq_len)
 		
         output = []
         for layer in self.layer_stack:
