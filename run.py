@@ -130,6 +130,9 @@ def get_encoded(args, split):
                                 args.encoder_hidden, args.encoder_layer)
     encoder.load_state_dict(ckpt)
     
+    if not exists(args.log_path):
+        os.makedirs(args.log_path)
+
     log_filename = join(args.log_path, f'summ_str(time()).txt')
 
     with open(log_filename,'w') as log_file:
