@@ -120,7 +120,7 @@ def get_encoded(args, split):
 
         log_file.write(f'Data stored in {data_path}\n')
 
-        dataset = DecodeDataset(data_path)
+        dataset = DecodeDataset(data_path, log_file)
         n_data = len(dataset)
 
         log_file.write(f'Dataset length: {n_data}\n')
@@ -163,7 +163,7 @@ def get_encoded(args, split):
                             cur_idx, n_data, cur_idx/n_data*100, timedelta(seconds=int(time()-start))
                     ), end='')
 
-        log_file.write('-'*20 + '\n')
+        log_file.write('-'*20 + '\n\n')
         log_file.close()
 
     return enc_list
