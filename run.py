@@ -115,6 +115,8 @@ def get_encoded(args, split):
         dataset = DecodeDataset(split,join(args.project_path,DATA_DIR))
         n_data = len(dataset)
 
+        log_file.write(f'Dataset length: {n_data}\n')
+
         loader = DataLoader(dataset, batch_size=args.batch,
             shuffle=False, num_workers=2 if args.cuda else 0, collate_fn=coll)
 
