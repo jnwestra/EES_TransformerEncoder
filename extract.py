@@ -204,8 +204,6 @@ class SummarizerEncoder(nn.Module):
         def zero(n, device):
             z = torch.zeros(n, hidden_size).to(device)
             return z
-        
-        sent_nums = [len(art_sent for art_sent in article_sents)]
 
         enc_sent = torch.stack(
             [torch.cat([s, zero(N-n, s.get_device())], dim=0)
