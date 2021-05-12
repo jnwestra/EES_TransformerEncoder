@@ -109,7 +109,7 @@ def get_encoded(args, split):
     n_data = len(dataset)
 
     loader = DataLoader(dataset, batch_size=args.batch,
-                        shuffle=False, num_workers=2, collate_fn=coll)
+        shuffle=False, num_workers=0, collate_fn=coll)
 
     ckpt_filename = join(args.result_path, 'ckpt', args.ckpt_name)
     
