@@ -167,7 +167,7 @@ class SummarizerEncoder(nn.Module):
 
         super(SummarizerEncoder,self).__init__()
 
-        self._device = torch.device('cuda' if args.cuda else 'cpu')
+        self._device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         word2id = pkl.load(open(join(data_root, 'vocab.pkl'), 'rb'))
         self._word2id = word2id
 
