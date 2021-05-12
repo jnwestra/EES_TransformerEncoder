@@ -112,7 +112,8 @@ def get_encoded(args, split):
         def coll(batch):
             articles = list(filter(bool, batch))
             return articles
-        dataset = DecodeDataset(split,join(args.project_path,DATA_DIR))
+        data_path = join(args.project_path,DATA_DIR)
+        dataset = DecodeDataset(split, data_path)
         n_data = len(dataset)
 
         log_file.write(f'Dataset length: {n_data}\n')
