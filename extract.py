@@ -177,7 +177,7 @@ class SummarizerEncoder(nn.Module):
             get_sinusoid_encoding_table(1000, enc_out_dim, padding_idx=0))
 
     def forward(self, article_sents):
-        enc_out = self._encode(article_sents, None)
+        enc_out = self._encode(article_sents, [:])
         return enc_out
 
     def extract(self, article_sents, sent_nums=None, k=4):
@@ -193,25 +193,25 @@ class SummarizerEncoder(nn.Module):
 
         return extract
 
-    def _encode(self, article_sents, sent_nums):
+    def _encode(self, article_sents):
         hidden_size = self._art_enc.input_size
-        print(article_sents[0])
-        if sent_nums is None:
-            enc_sent = self._sent_enc(article_sents[0]).unsqueeze(0)
-        else:
-            max_n = max(sent_nums)
-            enc_sents = [self._sent_enc(art_sent) for art_sent in article_sents]
+        enc_sents = [self._sent_enc(art_sent) for art_sent in article_sents]
         
-            def zero(n, device):
-                z = torch.zeros(n, hidden_size).to(device)
-                return z
-            enc_sent = torch.stack(
-                [torch.cat([s, zero(max_n-n, s.get_device())], dim=0)
-                if n != max_n
-                else s
-                for s, n in zip(enc_sents, sent_nums)],
-                dim=0
-            )
+        def zero(n, device):
+            z = torch.zeros(n, hidden_size).to(device)
+            return z
+
+        N = len(enc_sents)
+        
+        sent_nums = [range(N)]
+
+        enc_sent = torch.stack(
+            [torch.cat([s, zero(N-n, s.get_device())], dim=0)
+            if n != N
+            else s
+            for s, n in zip(enc_sents, sent_nums)],
+            dim=0
+        )
 
         batch_size, seq_len = enc_sent.size(0), enc_sent.size(1)
 
