@@ -147,7 +147,8 @@ def get_encoded(args, split):
             for raw_article_batch in loader:
                 tokenized_article_batch = map(tokenize(None,raw_article_batch), raw_article_batch)
                 for raw_art_sents in tokenized_article_batch:
-                    enc_out = encoder(raw_art_sents)
+                    enc_out, name = encoder(raw_art_sents)
+                    log_file.write(f'{name}\n')
                     enc_list.append(enc_out)
                     cur_idx += 1
                     log_file.write('{}/{} ({:.2f}%) encoded in {} seconds\r'.format(

@@ -24,9 +24,9 @@ class DecodeDataset(ImgDmDataset):
 
     def __getitem__(self, i):
         assert i is int
-        js_data = super().__getitem__(i)
+        js_data, name = super().__getitem__(i)
         art_sents = js_data['article']
-        return art_sents
+        return art_sents, name
 
 
 def make_html_safe(s):
