@@ -18,7 +18,7 @@ class ImgDmDataset(Dataset):
     def __getitem__(self, i: int):
         with open(join(self._data_path, self._names[i])) as f:
             js = json.loads(f.read())
-        return js, _names[i]
+        return js, _data_path
 
 def list_data(path):
     """ get names of and count number of data in the given path"""
