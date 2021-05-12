@@ -171,7 +171,7 @@ class SummarizerEncoder(nn.Module):
 
         super(SummarizerEncoder,self).__init__()
 
-        self._device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self._device = torch.device('cuda')
         word2id = pkl.load(open(join(data_root, 'vocab.pkl'), 'rb'))
         self._word2id = word2id
 
@@ -190,7 +190,7 @@ class SummarizerEncoder(nn.Module):
 
     def forward(self, raw_article_sents):
         article_sents = conver2id(UNK, self._word2id, raw_article_sents)
-        article = pad_batch_tensorize(article_sents, PAD, cuda=False
+        article = pad_batch_tensorize(article_sents, PAD, cuda=True
                                      ).to(self._device)
         enc_out = self._encode([article])
         return enc_out
