@@ -194,7 +194,7 @@ class SummarizerEncoder(nn.Module):
         article_sents = conver2id(UNK, self._word2id, raw_article_sents)
         article = pad_batch_tensorize(article_sents, PAD, cuda=True
                                      ).to(self._device)
-        enc_out = self._encode([article], sent_nums)
+        enc_out = self._encode(article, sent_nums)
         return enc_out
 
     def _encode(self, article_sents, sent_nums):
