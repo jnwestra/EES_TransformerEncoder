@@ -25,7 +25,7 @@ class DecodeDataset(ImgDmDataset):
         assert i is int
         js_data, name = super().__getitem__(i)
         art_sents = js_data['article']
-        return art_sents, name
+        return art_sents
 
 
 def make_html_safe(s):
