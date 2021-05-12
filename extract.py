@@ -10,6 +10,7 @@ from math import sqrt
 
 from utils import PAD, UNK, START, END
 from data.batcher import conver2id, pad_batch_tensorize
+import pickle as pkl
 
 from transformer.Models import get_sinusoid_encoding_table
 
