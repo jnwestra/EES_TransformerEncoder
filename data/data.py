@@ -8,8 +8,7 @@ from torch.utils.data import Dataset
 
 class ImgDmDataset(Dataset):
     def __init__(self, split: str, path: str) -> None:
-        assert split in ['train', 'val', 'test']
-        self._data_path = join(path, split)
+        self._data_path = path
         self._names, self._n_data = list_data(self._data_path)
 
     def __len__(self) -> int:

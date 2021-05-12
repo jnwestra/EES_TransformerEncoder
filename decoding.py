@@ -18,9 +18,8 @@ from data.data import ImgDmDataset, list_data
 
 class DecodeDataset(ImgDmDataset):
     """ get the article sentences only (for decoding use)"""
-    def __init__(self, split, path):
-        assert split in ['val', 'test']
-        super().__init__(split, path)
+    def __init__(self, path):
+        super().__init__(path)
 
     def __getitem__(self, i):
         assert i is int
