@@ -126,7 +126,7 @@ def get_encoded(args, split):
         log_file.write(f'Dataset length: {n_data}\n')
 
         loader = DataLoader(dataset, batch_size=args.batch,
-            shuffle=False, num_workers=2 if args.cuda else 0, collate_fn=coll)
+            shuffle=False, num_workers=0, collate_fn=coll)
 
         ckpt_filename = join(args.result_path, 'ckpt', args.ckpt_name)
         
