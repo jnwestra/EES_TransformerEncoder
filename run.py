@@ -2,6 +2,7 @@ import json
 import os
 from os.path import join, exists
 import random #
+import time, datetime
 from time import time
 from datetime import timedelta
 
@@ -134,7 +135,7 @@ def get_encoded(args, split):
     enc_list = []
     cur_idx = 0
     start = time()
-    log_file.write('Getting encoded article sentences')
+    log_file.write(f'Getting encoded article sentences at {str(timedelta(seconds=start%86400))}')
     with torch.no_grad():
         for raw_article_batch in loader:
             tokenized_article_batch = map(tokenize(None), raw_article_batch)
