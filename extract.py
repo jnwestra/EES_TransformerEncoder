@@ -177,7 +177,7 @@ class SummarizerEncoder(nn.Module):
             get_sinusoid_encoding_table(1000, enc_out_dim, padding_idx=0))
 
     def forward(self, article_sents):
-        enc_out = self._encode(article_sents, [:])
+        enc_out = self._encode(article_sents)
         return enc_out
 
     def extract(self, article_sents, sent_nums=None, k=4):
