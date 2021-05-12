@@ -265,7 +265,7 @@ class ConvSentEncoder(nn.Module):
         conv_in = F.dropout(emb_input.transpose(1, 2),
                             self._dropout, training=False)
         output = torch.cat([F.relu(conv(conv_in)).max(dim=2)[0]
-                            for conv in self._convs], dim=1)
+                            for conv in self._convs], dim=1).to('cuda')
         return output
 
     def set_embedding(self, embedding):
