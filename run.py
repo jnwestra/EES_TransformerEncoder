@@ -142,8 +142,7 @@ def get_encoded(args, split):
         log_file.write(f'Getting encoded article sentences at {str(timedelta(seconds=start%86400))}')
         with torch.no_grad():
             for raw_article_batch in loader:
-                tokenized_article_batch = map(tokenize(None), raw_article_batch)
-                log_file.write(f'{str(tokenized_article_batch)}\n')
+                tokenized_article_batch = map(tokenize(None,raw_article_batch), raw_article_batch)
                 for raw_art_sents in tokenized_article_batch:
                     enc_out = encoder(raw_art_sents)
                     enc_list.append(enc_out)
