@@ -7,7 +7,7 @@ from os.path import join, isfile
 from torch.utils.data import Dataset
 
 class ImgDmDataset(Dataset):
-    def __init__(self, path: str, log_file: _io.TextIOWrapper) -> None:
+    def __init__(self, path: str, log_file: io.TextIOWrapper) -> None:
         self._data_path = path
         self._names, self._n_data = list_data(self._data_path)
 
