@@ -113,6 +113,9 @@ def get_encoded(args, split):
             articles = list(filter(bool, batch))
             return articles
         data_path = join(args.project_path,DATA_DIR)
+
+        log_file.write(f'Data stored in {data_path}\n')
+
         dataset = DecodeDataset(split, data_path)
         n_data = len(dataset)
 
