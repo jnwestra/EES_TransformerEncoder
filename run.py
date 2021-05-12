@@ -135,7 +135,7 @@ def get_encoded(args, split):
     with torch.no_grad():
         for raw_article_batch in loader:
             tokenized_article_batch = map(tokenize(None), raw_article_batch)
-            print(tokenized_article_batch)
+            args.log_file.write(str(tokenized_article_batch))
             for raw_art_sents in tokenized_article_batch:
                 enc_out = encoder(raw_art_sents)
                 enc_list.append(enc_out)
@@ -156,7 +156,8 @@ class argWrapper(object):
                vocab_size=30004,
                conv_hidden=100,
                encoder_layer=12,
-               encoder_hidden=512):
+               encoder_hidden=512,
+               log_file=None):
     self.ckpt_name = ckpt_name
     self.result_path = result_path
     self.project_path = project_path
@@ -167,12 +168,4 @@ class argWrapper(object):
     self.conv_hidden = conv_hidden
     self.encoder_layer = encoder_layer
     self.encoder_hidden = encoder_hidden
-
-if __name__ == '__main__':
-    args = argWrapper('ckpt-0.313407-3000')
-
-    enc_list = get_encoded(args, 'test')
-
-
-
-
+    self.log_file = log_file
