@@ -25,6 +25,6 @@ class ImgDmDataset(Dataset):
 
 def list_data(path):
     """ get names of and count number of data in the given path"""
-    names = [filename for filename in os.listdir(path) if isfile(filename) and filename.endswith('.json')]
+    names = [filename for filename in os.listdir(path) if isfile(join(path,filename)) and filename.endswith('.json')]
     n_data = len(names)
     return names, n_data
