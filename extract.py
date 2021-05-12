@@ -8,6 +8,9 @@ import numpy as np
 import math
 from math import sqrt
 
+from utils import PAD, UNK, START, END
+from data.batcher import conver2id, pad_batch_tensorize
+
 from transformer.Models import get_sinusoid_encoding_table
 
 INI = 1e-2
@@ -164,6 +167,11 @@ class SummarizerEncoder(nn.Module):
 
         super().__init__()
 
+        self._device = torch.device('cuda' if args.cuda else 'cpu')
+        word2id = pkl.load(open(join(args.result_path, 'vocab.pkl'), 'rb'))
+        self._word2id = word2id
+
+
         self._sent_enc = ConvSentEncoder(vocab_size, emb_dim,
             conv_hidden, dropout)
 
@@ -176,7 +184,10 @@ class SummarizerEncoder(nn.Module):
         self.sent_pos_embed = nn.Embedding.from_pretrained(
             get_sinusoid_encoding_table(1000, enc_out_dim, padding_idx=0))
 
-    def forward(self, article_sents):
+    def forward(self, raw_article_sents):
+        articles = conver2id(UNK, self._word2id, raw_article_sents)
+        article = pad_batch_tensorize(articles, PAD, cuda=False
+                                     ).to(self._device)
         enc_out = self._encode(article_sents)
         return enc_out
 
