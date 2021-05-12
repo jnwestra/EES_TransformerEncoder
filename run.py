@@ -31,7 +31,10 @@ def test(args, split):
     def coll(batch):
         articles = list(filter(bool, batch))
         return articles
-    dataset = DecodeDataset(split, join(args.project_path,DATA_DIR))
+
+    data_path = join(args.project_path,DATA_DIR,split)
+    
+    dataset = DecodeDataset(data_path)
 
     n_data = len(dataset)
     loader = DataLoader(dataset, batch_size=args.batch,
@@ -117,7 +120,7 @@ def get_encoded(args, split):
 
         log_file.write(f'Data stored in {data_path}\n')
 
-        dataset = DecodeDataset(split, data_path)
+        dataset = DecodeDataset(data_path)
         n_data = len(dataset)
 
         log_file.write(f'Dataset length: {n_data}\n')
