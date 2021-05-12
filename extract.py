@@ -205,6 +205,7 @@ class SummarizerEncoder(nn.Module):
             z = torch.zeros(n, hidden_size).to(device)
             return z
 
+        sent_nums = [num+1 for num in range(len(article_sents))]
         max_n = max(sent_nums)
 
         enc_sent = torch.stack(
