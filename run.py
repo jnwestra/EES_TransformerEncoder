@@ -112,6 +112,7 @@ def get_encoded(args, split):
         def coll(batch):
             articles = list(filter(bool, batch))
             return articles
+        
         data_path = join(args.project_path,DATA_DIR)
 
         log_file.write(f'Data stored in {data_path}\n')
