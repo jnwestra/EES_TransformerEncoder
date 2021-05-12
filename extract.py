@@ -203,7 +203,7 @@ class SummarizerEncoder(nn.Module):
 
         N = len(enc_sents)
         
-        sent_nums = [range(N)]
+        sent_nums = list(range(N))
 
         enc_sent = torch.stack(
             [torch.cat([s, zero(N-n, s.get_device())], dim=0)
