@@ -165,8 +165,7 @@ class SummarizerEncoder(nn.Module):
     def __init__(self, emb_dim, vocab_size, conv_hidden, encoder_hidden,
         encoder_layer, data_root, isTrain=False, n_hop=1, dropout=0.0):
 
-        super().__init__(emb_dim, vocab_size, conv_hidden, encoder_hidden,
-            encoder_layer, isTrain, n_hop, dropout)
+        super().__init__(SummarizerEncoder)
 
         self._device = torch.device('cuda' if args.cuda else 'cpu')
         word2id = pkl.load(open(join(data_root, 'vocab.pkl'), 'rb'))
