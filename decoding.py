@@ -24,7 +24,7 @@ class DecodeDataset(ImgDmDataset):
 
     def __getitem__(self, i):
         self.log_file.write(f'Dataloader indexing with type {type(i)}\n')
-        js_data, name = super().__getitem__(i)
+        js_data = super().__getitem__(i)
         art_sents = js_data['article']
         return art_sents
 
