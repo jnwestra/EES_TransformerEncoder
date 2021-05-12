@@ -190,23 +190,22 @@ class SummarizerEncoder(nn.Module):
             get_sinusoid_encoding_table(1000, enc_out_dim, padding_idx=0))
 
     def forward(self, raw_article_sents):
+        sent_nums = [len(sent) for sent in raw_article_sents]
         article_sents = conver2id(UNK, self._word2id, raw_article_sents)
         article = pad_batch_tensorize(article_sents, PAD, cuda=True
                                      ).to(self._device)
-        enc_out = self._encode([article])
+        enc_out = self._encode([article], sent_nums)
         return enc_out
 
-    def _encode(self, article_sents):
+    def _encode(self, article_sents, sent_nums):
         hidden_size = self._art_enc.input_size
         enc_sents = [self._sent_enc(art_sent) for art_sent in article_sents]
         
         def zero(n, device):
             z = torch.zeros(n, hidden_size).to(device)
             return z
-
-        N = len(enc_sents)
         
-        sent_nums = list(range(N))
+        sent_nums = [len(art_sent for art_sent in article_sents)]
 
         enc_sent = torch.stack(
             [torch.cat([s, zero(N-n, s.get_device())], dim=0)

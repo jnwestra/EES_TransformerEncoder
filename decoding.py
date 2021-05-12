@@ -70,8 +70,8 @@ class Decoder(object):
         n_art = len(raw_article_sents)
 
         articles = conver2id(UNK, self._word2id, raw_article_sents)
-        article = pad_batch_tensorize(articles, PAD, cuda=False
-                                     ).to(self._device)
+        article = pad_batch_tensorize(articles, PAD, cuda=False).to(self._device)
+        
         indices = self._net.extract([article], k=min(n_art, self._max_ext))
         return indices
 
