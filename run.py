@@ -145,7 +145,7 @@ def get_encoded(args, split):
             del_key(ckpt, key)
 
         encoder = SummarizerEncoder(args.emb_dim, args.vocab_size, args.conv_hidden,
-                                    args.encoder_hidden, args.encoder_layer, data_root)
+                                    args.encoder_hidden, args.encoder_layer, data_root).to('cuda')
         encoder.load_state_dict(ckpt)
 
         enc_list = []

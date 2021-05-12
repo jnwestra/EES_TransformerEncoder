@@ -239,7 +239,7 @@ class SummarizerEncoder(nn.Module):
         assert attn_mask.size() == (batch_size, seq_len, seq_len)
         assert non_pad_mask.size() == (batch_size, seq_len, 1)
         
-        output = self._art_enc(inputs, non_pad_mask, attn_mask)
+        output = self._art_enc(inputs, non_pad_mask, attn_mask).to('cuda')
         return output
 
     def set_embedding(self, embedding):
