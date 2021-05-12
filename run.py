@@ -159,9 +159,8 @@ def get_encoded(args, split):
                     enc_out = encoder(raw_art_sents)
                     enc_list.append(enc_out)
                     cur_idx += 1
-                    log_file.write('{}/{} ({:.2f}%) encoded in {} seconds\r'.format(
-                            cur_idx, n_data, cur_idx/n_data*100, timedelta(seconds=int(time()-start))
-                    ), end='')
+                    log_file.write(f'{cur_idx}/{n_data} ({cur_idx/n_data*100:.2f}%)
+                        encoded in {timedelta(seconds=int(time()-start))} seconds\n')
 
         log_file.write('-'*20 + '\n\n')
         log_file.close()
