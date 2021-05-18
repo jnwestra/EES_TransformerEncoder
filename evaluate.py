@@ -17,6 +17,7 @@ print(_ROUGE_PATH)
 def eval_rouge(dec_dir, ref_dir):
     """ evaluate by original Perl implementation"""
     # silence pyrouge logging
+    print(_ROUGE_PATH)
     assert _ROUGE_PATH is not None
     assert os.path.exists(_ROUGE_PATH)
     print(_ROUGE_PATH)
