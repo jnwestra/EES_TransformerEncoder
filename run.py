@@ -26,30 +26,21 @@ sys.setrecursionlimit(10000)
 DATA_DIR = 'IMGDM'
 
 def test(args, split):
-
-    #setup loader
+    
+    # setup loader
     def coll(batch):
         articles = list(filter(bool, batch))
         return articles
-    
     data_root= join(args.project_path,DATA_DIR)
     data_path = join(data_root,split)
-    
+
+
     dataset = DecodeDataset(data_path)
-
     n_data = len(dataset)
-    loader = DataLoader(dataset, batch_size=args.batch,
-        shuffle=False, num_workers=2 if args.cuda else 0, collate_fn=coll)
 
-    print('dataset length', n_data)
+    loader = DataLoader(dataset, batch_size=1,
+        shuffle=False, num_workers=0, collate_fn=coll)
 
-    # decode and eval top 5 models
-    if not os.path.exists(join(args.result_path, 'decode')):
-        os.mkdir(join(args.result_path, 'decode'))
-        
-    if not os.path.exists(join(args.result_path, 'ROUGE')):
-        os.mkdir(join(args.result_path, 'ROUGE'))
-    
     ckpt_filename = join(args.result_path, 'ckpt', args.ckpt_name)
     
     def load_ckpt(ckpt_filename):
