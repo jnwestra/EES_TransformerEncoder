@@ -14,7 +14,7 @@ from model.util import sequence_loss
 from decoding import Decoder, DecodeDataset
 from evaluate import eval_rouge
 
-from data.data import ImgDmDataset
+from data.data import ImgDmDataset, list_data
 from data.batcher import tokenize
 
 import warnings
@@ -70,7 +70,8 @@ def test(args, split):
     print()
 
     # write files
-    for file_idx, ext_ids in enumerate(ext_list):
+    file_idxs = [name.split('.')[0] for name in list_data(data_path)]
+    for file_idx, ext_ids in zip(file_idxs,ext_list):
         dec = []
         art_path = join(data_path, f'{file_idx}.json')
         with open(art_path) as f:
