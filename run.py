@@ -72,7 +72,7 @@ def test(args, split):
     # write files
     for file_idx, ext_ids in enumerate(ext_list):
         dec = []
-        data_path = join(project_path, DATA_DIR, '{}/{}.json'.format(split, file_idx))
+        art_path = join(data_path, '{file_idx}.json')
         with open(data_path) as f:
             data = json.loads(f.read())
         n_ext = 3
@@ -87,7 +87,7 @@ def test(args, split):
     # evaluate current model
     print('Starting evaluating ROUGE !')
     dec_path = save_path
-    ref_path = join(args.project_path, DATA_DIR, 'refs/{}'.format(split))
+    ref_path = join(data_dir, 'refs/{}'.format(split))
     print("eval_rouge")
     ROUGE = eval_rouge(dec_path, ref_path)
     print(ROUGE)
