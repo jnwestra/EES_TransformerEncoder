@@ -35,7 +35,7 @@ class Summarizer(nn.Module):
         # Sentence Encoder (Transformer)
         enc_out_dim = encoder_hidden
         self._art_enc = TransformerEncoder(
-            3*conv_hidden, encoder_hidden, encoder_layer, decoder)
+            3*conv_hidden, encoder_hidden, encoder_layer)
         
         self._emb_w = nn.Linear(3*conv_hidden, encoder_hidden)
         self.sent_pos_embed = nn.Embedding.from_pretrained(
