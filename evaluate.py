@@ -11,7 +11,7 @@ from cytoolz import curry
 from pyrouge import Rouge155
 from pyrouge.utils import log
 
-_ROUGE_PATH = 'summarizer/rouge'
+_ROUGE_PATH = './rouge/ROUGE-RELEASE-1.5.5'
 print(_ROUGE_PATH)
 
 def eval_rouge(dec_dir, ref_dir):
