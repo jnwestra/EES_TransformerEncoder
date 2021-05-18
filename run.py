@@ -89,7 +89,7 @@ def test(args, split):
     # evaluate current model
     print('Starting evaluating ROUGE !')
     dec_path = save_path
-    ref_path = join(data_dir, 'refs/{}'.format(split))
+    ref_path = join(data_root, 'refs/{}'.format(split))
     print("eval_rouge")
     ROUGE = eval_rouge(dec_path, ref_path)
     print(ROUGE)
