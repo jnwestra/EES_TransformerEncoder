@@ -158,7 +158,7 @@ def get_labels(args, split):
         return lab_t_batch
     
     label_set = DecodeLabels(data_path)
-    loader = DataLoader(label_set, batch_size=1, shuffle=False, num_workers=0, collate_fn=c_fn)
+    loader = DataLoader(label_set, batch_size=1, shuffle=False, num_workers=0, collate_fn=coll)
 
     labels = [label[0] for label in loader]
 
