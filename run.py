@@ -72,8 +72,8 @@ def test(args, split):
     # write files
     for file_idx, ext_ids in enumerate(ext_list):
         dec = []
-        art_path = join(data_path, '{file_idx}.json')
-        with open(data_path) as f:
+        art_path = join(data_path, f'{file_idx}.json')
+        with open(art_path) as f:
             data = json.loads(f.read())
         n_ext = 3
         n_ext = min(n_ext, len(data['article']))
