@@ -11,7 +11,7 @@ from torch.utils.data import DataLoader
 
 from extract import SummarizerEncoder
 from model.util import sequence_loss
-from decoding import Decoder, DecodeDataset
+from decoding import Decoder, DecodeDataset, DecodeLabels
 from evaluate import eval_rouge
 
 from data.data import ImgDmDataset, list_data
@@ -143,6 +143,26 @@ def get_encoded(args, split):
                 cur_idx += 1
 
     return enc_list
+
+def get_labels(args, split):
+    data_root= join(args.project_path,DATA_DIR)
+    data_path = join(data_root,split)
+
+    def coll(batch):
+        lab_t_batch = []
+        for label, num_sents in batch:
+            lab_t = torch.zeros(num_sents,1)
+            for sent_idx in label:
+                lab_t[sent_idx-1, 0] = 1
+            lab_t_list.append(lab_t)
+        return lab_t_batch
+    
+    label_set = DecodeLabels(data_path)
+    loader = DataLoader(label_set, batch_size=1, shuffle=False, num_workers=0, collate_fn=c_fn)
+
+    labels = [label[0] for label in loader]
+
+    return labels
 
 class argWrapper(object):
   def __init__(self,

@@ -26,6 +26,15 @@ class DecodeDataset(ImgDmDataset):
         art_sents = js_data['article']
         return art_sents
 
+class DecodeLabels(ImgDmDataset):
+    def __init__(self, path):
+        super().__init__(path)
+    
+    def __getitem__(self, i):
+        js_data = super().__getitem__(i)
+        art_label = js_data['label']
+        num_sents = len(js_data['article'])
+        return art_label, num_sents
 
 def make_html_safe(s):
     """Rouge use html, has to make output html safe"""
