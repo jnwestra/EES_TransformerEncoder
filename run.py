@@ -154,7 +154,7 @@ def get_labels(args, split):
             lab_t = torch.zeros(num_sents,1)
             for sent_idx in label:
                 lab_t[sent_idx-1, 0] = 1
-            lab_t_list.append(lab_t)
+            lab_t_batch.append(lab_t)
         return lab_t_batch
     
     label_set = DecodeLabels(data_path)
