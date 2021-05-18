@@ -30,7 +30,7 @@ class Summarizer(nn.Module):
         super().__init__()
 
         self._sent_enc = ConvSentEncoder(
-            vocab_size, emb_dim, conv_hidden, dropout, emb_type)
+            vocab_size, emb_dim, conv_hidden, dropout)
 
         # Sentence Encoder (Transformer)
         enc_out_dim = encoder_hidden
