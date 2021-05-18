@@ -70,7 +70,8 @@ def test(args, split):
     print()
 
     # write files
-    file_idxs = [name.split('.')[0] for name in list_data(data_path)]
+    names, _ = list_data(data_path)
+    file_idxs = [name.split('.')[0] for name in names]
     for file_idx, ext_ids in zip(file_idxs,ext_list):
         dec = []
         art_path = join(data_path, f'{file_idx}.json')
