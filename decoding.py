@@ -18,12 +18,10 @@ from data.data import ImgDmDataset, list_data
 
 class DecodeDataset(ImgDmDataset):
     """ get the article sentences only (for decoding use)"""
-    def __init__(self, path, log_file):
-        super().__init__(path, log_file)
-        self.log_file = log_file
+    def __init__(self, path):
+        super().__init__(path)
 
     def __getitem__(self, i):
-        self.log_file.write(f'Dataloader indexing with type {type(i)}\n')
         js_data = super().__getitem__(i)
         art_sents = js_data['article']
         return art_sents
