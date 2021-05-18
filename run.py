@@ -151,7 +151,7 @@ def get_labels(args, split):
     def coll(batch):
         lab_t_batch = []
         for label, num_sents in batch:
-            lab_t = torch.zeros(num_sents,1)
+            lab_t = torch.zeros(num_sents,1).to('cuda')
             for sent_idx in label:
                 lab_t[sent_idx-1, 0] = 1
             lab_t_batch.append(lab_t)
